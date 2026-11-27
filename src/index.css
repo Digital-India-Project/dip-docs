@@ -1,16 +1,35 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+@import "./styles/dip-tokens.css";
 
 @theme {
-  --font-serif: "Fraunces", "Noto Sans Devanagari", Georgia, Cambria, "Times New Roman", serif;
-  --font-sans: "Plus Jakarta Sans", "Noto Sans Devanagari", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--dip-font-display);
+  --font-sans: var(--dip-font-sans);
+  --font-serif: var(--dip-font-serif);
+  --font-mono: var(--dip-font-mono);
 }
 
 @layer base {
   html {
-    font-family: var(--font-sans);
+    font-family: var(--dip-font-sans);
+    background-color: var(--dip-bg-canvas);
+    color: var(--dip-text-primary);
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--dip-font-display);
+  }
+
+  code,
+  pre,
+  kbd {
+    font-family: var(--dip-font-mono);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -18,4 +37,8 @@
       scroll-behavior: auto;
     }
   }
+}
+
+.dip-tabular {
+  font-variant-numeric: tabular-nums;
 }

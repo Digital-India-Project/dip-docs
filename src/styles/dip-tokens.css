@@ -1,0 +1,122 @@
+:root {
+  --dip-bg-canvas: #fafafa;
+  --dip-bg-surface: #ffffff;
+  --dip-bg-subtle: #f4f4f5;
+  --dip-bg-elevated: #ffffff;
+  --dip-border: #e4e4e7;
+  --dip-border-strong: #d4d4d8;
+  --dip-text-primary: #18181b;
+  --dip-text-secondary: #3f3f46;
+  --dip-text-muted: #52525b;
+  --dip-brand-red: #c81e1e;
+  --dip-brand-red-hover: #991b1b;
+  --dip-brand-red-soft: #fef2f2;
+  --dip-brand-orange: #c2410c;
+  --dip-brand-orange-hover: #9a3412;
+  --dip-brand-orange-soft: #fff7ed;
+  --dip-brand-saffron: #ff671f;
+  --dip-brand-saffron-hover: #e55b1b;
+  --dip-brand-yellow: #ffc928;
+  --dip-brand-yellow-text: #92400e;
+  --dip-brand-yellow-soft: #fef9c3;
+  --dip-brand-green: #15803d;
+  --dip-brand-green-hover: #166534;
+  --dip-brand-green-soft: #f0fdf4;
+  --dip-brand-india-green: #138808;
+  --dip-brand-charcoal: #202124;
+  --dip-brand-offwhite: #fffdf8;
+  --dip-accent: var(--dip-brand-red);
+  --dip-accent-hover: var(--dip-brand-red-hover);
+  --dip-accent-fg: #ffffff;
+  --dip-accent-text: #b91c1c;
+  --dip-accent-soft: var(--dip-brand-red-soft);
+  --dip-success: var(--dip-brand-green);
+  --dip-success-soft: var(--dip-brand-green-soft);
+  --dip-warning: var(--dip-brand-yellow-text);
+  --dip-warning-soft: var(--dip-brand-yellow-soft);
+  --dip-danger: #b91c1c;
+  --dip-danger-soft: #fef2f2;
+  --dip-info: var(--dip-brand-orange);
+  --dip-info-soft: var(--dip-brand-orange-soft);
+  --dip-focus-ring: #c2410c;
+  --dip-shadow-sm: 0 1px 2px 0 rgba(24, 24, 27, 0.05);
+  --dip-shadow-md: 0 4px 12px -2px rgba(24, 24, 27, 0.08), 0 2px 4px -2px rgba(24, 24, 27, 0.04);
+  --dip-shadow-lg: 0 16px 32px -8px rgba(24, 24, 27, 0.14), 0 4px 8px -4px rgba(24, 24, 27, 0.06);
+  --dip-radius-sm: 4px;
+  --dip-radius-md: 8px;
+  --dip-radius-lg: 12px;
+  --dip-radius-xl: 16px;
+  --dip-z-base: 0;
+  --dip-z-dropdown: 20;
+  --dip-z-sticky: 30;
+  --dip-z-overlay: 40;
+  --dip-z-modal: 50;
+  --dip-z-popover: 60;
+  --dip-z-toast: 70;
+  --dip-z-tooltip: 80;
+  --dip-font-display: 'Plus Jakarta Sans', 'DM Sans', 'Noto Sans Devanagari', system-ui, -apple-system, sans-serif;
+  --dip-font-sans: 'Public Sans', 'DM Sans', 'Noto Sans Devanagari', system-ui, -apple-system, sans-serif;
+  --dip-font-serif: 'Source Serif 4', 'Noto Sans Devanagari', Georgia, Cambria, 'Times New Roman', serif;
+  --dip-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  --dip-duration-fast: 120ms;
+  --dip-duration-normal: 180ms;
+  --dip-duration-slow: 260ms;
+  --dip-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: light;
+}
+
+.dark {
+  --dip-bg-canvas: #0b0f17;
+  --dip-bg-surface: #111827;
+  --dip-bg-subtle: #1f2937;
+  --dip-bg-elevated: #182132;
+  --dip-border: #1f2937;
+  --dip-border-strong: #374151;
+  --dip-text-primary: #f8fafc;
+  --dip-text-secondary: #cbd5e1;
+  --dip-text-muted: #94a3b8;
+  --dip-brand-red: #dc2626;
+  --dip-brand-red-hover: #b91c1c;
+  --dip-brand-red-soft: rgba(220, 38, 38, 0.16);
+  --dip-brand-orange: #fb923c;
+  --dip-brand-orange-hover: #f97316;
+  --dip-brand-orange-soft: rgba(234, 88, 12, 0.16);
+  --dip-brand-saffron: #ff671f;
+  --dip-brand-saffron-hover: #fb923c;
+  --dip-brand-yellow: #fbbf24;
+  --dip-brand-yellow-text: #fcd34d;
+  --dip-brand-yellow-soft: rgba(245, 158, 11, 0.15);
+  --dip-brand-green: #4ade80;
+  --dip-brand-green-hover: #22c55e;
+  --dip-brand-green-soft: rgba(34, 197, 94, 0.15);
+  --dip-brand-india-green: #22c55e;
+  --dip-brand-charcoal: #f1f5f9;
+  --dip-brand-offwhite: #111827;
+  --dip-accent: var(--dip-brand-red);
+  --dip-accent-hover: var(--dip-brand-red-hover);
+  --dip-accent-fg: #ffffff;
+  --dip-accent-text: #f87171;
+  --dip-accent-soft: var(--dip-brand-red-soft);
+  --dip-success: var(--dip-brand-green);
+  --dip-success-soft: var(--dip-brand-green-soft);
+  --dip-warning: var(--dip-brand-yellow-text);
+  --dip-warning-soft: var(--dip-brand-yellow-soft);
+  --dip-danger: #f87171;
+  --dip-danger-soft: rgba(239, 68, 68, 0.16);
+  --dip-info: var(--dip-brand-orange);
+  --dip-info-soft: var(--dip-brand-orange-soft);
+  --dip-focus-ring: #fb923c;
+  --dip-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --dip-shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.5);
+  --dip-shadow-lg: 0 20px 36px -8px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  .dark {
+    --dip-duration-fast: 0ms;
+    --dip-duration-normal: 0ms;
+    --dip-duration-slow: 0ms;
+  }
+}

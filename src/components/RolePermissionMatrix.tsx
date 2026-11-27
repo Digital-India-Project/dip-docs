@@ -60,14 +60,14 @@ export function RolePermissionMatrix() {
 
   return (
     <section aria-label="Interactive RBAC Permission Matrix" className="my-6 space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--dip-radius-md)] border border-[var(--dip-border)] bg-[var(--dip-bg-subtle)] p-4">
         <div>
-          <h2 className="font-serif text-lg font-medium text-neutral-950 dark:text-neutral-50">
+          <h2 className="font-semibold text-lg text-[var(--dip-text-primary)]">
             Interactive Permission Matrix (DIPINDIA)
           </h2>
-          <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400">
+          <p className="mt-1 text-xs text-[var(--dip-text-muted)]">
             Source: <span className="font-mono">src/lib/rbac.ts</span> ·{' '}
-            <span className="tabular-nums">{visiblePermissions.length}</span> of 22 permissions shown
+            <span className="dip-tabular">{visiblePermissions.length}</span> of 22 permissions shown
           </p>
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -76,10 +76,10 @@ export function RolePermissionMatrix() {
               key={group}
               type="button"
               onClick={() => setSelectedGroup(group)}
-              className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+              className={`rounded-[var(--dip-radius-md)] border px-2.5 py-1 text-xs font-medium transition-colors duration-[var(--dip-duration-fast)] whitespace-nowrap shrink-0 cursor-pointer ${
                 selectedGroup === group
-                  ? 'border-blue-900 bg-blue-900 text-white dark:border-blue-500 dark:bg-blue-500 dark:text-neutral-950'
-                  : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                  ? 'border-transparent bg-[var(--dip-accent)] text-[var(--dip-accent-fg)] shadow-[var(--dip-shadow-sm)]'
+                  : 'border-[var(--dip-border)] bg-[var(--dip-bg-surface)] text-[var(--dip-text-secondary)] hover:border-[var(--dip-border-strong)] hover:bg-[var(--dip-bg-subtle)]'
               }`}
             >
               {group}
@@ -88,34 +88,34 @@ export function RolePermissionMatrix() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
-        <table className="w-full border-collapse text-left text-xs tabular-nums">
-          <thead className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-300">
+      <div className="overflow-x-auto rounded-[var(--dip-radius-md)] border border-[var(--dip-border)]">
+        <table className="w-full border-collapse text-left text-xs dip-tabular">
+          <thead className="border-b border-[var(--dip-border)] bg-[var(--dip-bg-subtle)] text-[var(--dip-text-secondary)]">
             <tr>
-              <th className="px-3 py-3 font-semibold text-neutral-900 dark:text-neutral-100">
+              <th className="px-3 py-3 font-semibold text-[var(--dip-text-primary)]">
                 Permission Code
               </th>
               {ROLES.map((r) => (
                 <th
                   key={r.key}
-                  className="px-2.5 py-3 text-center font-semibold text-neutral-900 dark:text-neutral-100 whitespace-nowrap"
+                  className="px-2.5 py-3 text-center font-semibold text-[var(--dip-text-primary)] whitespace-nowrap"
                 >
                   {r.label}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 bg-white dark:bg-neutral-950">
+          <tbody className="divide-y divide-[var(--dip-border)] bg-[var(--dip-bg-surface)]">
             {visiblePermissions.map((perm) => (
               <tr
                 key={perm.code}
-                className="transition-colors hover:bg-neutral-50/80 dark:hover:bg-neutral-900/60"
+                className="transition-colors hover:bg-[var(--dip-bg-subtle)]/60"
               >
                 <td className="px-3 py-2.5">
-                  <div className="font-mono font-medium text-neutral-900 dark:text-neutral-100">
+                  <div className="font-mono font-medium text-[var(--dip-text-primary)]">
                     {perm.code}
                   </div>
-                  <div className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                  <div className="text-[11px] text-[var(--dip-text-muted)]">
                     {perm.label}
                   </div>
                 </td>
@@ -125,14 +125,14 @@ export function RolePermissionMatrix() {
                     <td key={role.key} className="px-2.5 py-2.5 text-center">
                       {granted ? (
                         <span
-                          className="inline-flex items-center justify-center text-emerald-700 dark:text-emerald-400"
+                          className="inline-flex items-center justify-center text-[var(--dip-success)]"
                           title="Granted"
                         >
                           <Check className="h-4 w-4" aria-label="Granted" />
                         </span>
                       ) : (
                         <span
-                          className="inline-flex items-center justify-center text-neutral-300 dark:text-neutral-700"
+                          className="inline-flex items-center justify-center text-[var(--dip-border-strong)]"
                           title="Not granted"
                         >
                           <Minus className="h-3.5 w-3.5" aria-label="Not granted" />

@@ -14,9 +14,9 @@ interface OperationRow {
 }
 
 const METHOD_STYLES: Record<string, string> = {
-  GET: 'text-blue-900 dark:text-blue-300 border-blue-200 dark:border-blue-800 bg-blue-50/70 dark:bg-blue-950/40',
-  POST: 'text-emerald-900 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 bg-emerald-50/70 dark:bg-emerald-950/40',
-  PATCH: 'text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-950/40',
+  GET: 'text-[var(--dip-info)] border-[var(--dip-info)]/30 bg-[var(--dip-info-soft)]',
+  POST: 'text-[var(--dip-success)] border-[var(--dip-success)]/30 bg-[var(--dip-success-soft)]',
+  PATCH: 'text-[var(--dip-warning)] border-[var(--dip-warning)]/30 bg-[var(--dip-warning-soft)]',
 };
 
 export function ApiEndpointExplorer() {
@@ -81,27 +81,27 @@ export function ApiEndpointExplorer() {
       aria-label="Interactive OpenAPI 3.1.0 Explorer"
       className="my-6 space-y-5"
     >
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
+      <div className="rounded-[var(--dip-radius-md)] border border-[var(--dip-border)] bg-[var(--dip-bg-subtle)] p-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
           <div>
-            <h2 className="font-serif text-lg font-medium text-neutral-950 dark:text-neutral-50">
+            <h2 className="font-semibold text-lg text-[var(--dip-text-primary)]">
               {OPENAPI_SPEC.info.title}
             </h2>
-            <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400">
+            <p className="mt-1 text-xs text-[var(--dip-text-muted)]">
               OpenAPI {OPENAPI_SPEC.openapi} · Version {OPENAPI_SPEC.info.version} ·{' '}
-              <span className="tabular-nums">{operations.length} operations</span>
+              <span className="dip-tabular">{operations.length} operations</span>
             </p>
           </div>
-          <div className="flex items-center gap-1 rounded-lg bg-neutral-200/70 dark:bg-neutral-800 p-1">
+          <div className="inline-flex items-center gap-1 rounded-[var(--dip-radius-md)] border border-[var(--dip-border)] bg-[var(--dip-bg-surface)] p-1">
             {(['all', 'authenticated', 'public'] as const).map((mode) => (
               <button
                 key={mode}
                 type="button"
                 onClick={() => setAuthFilter(mode)}
-                className={`rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors whitespace-nowrap shrink-0 ${
+                className={`rounded-[var(--dip-radius-sm)] px-2.5 py-1 text-xs font-medium capitalize transition-colors duration-[var(--dip-duration-fast)] whitespace-nowrap shrink-0 cursor-pointer ${
                   authFilter === mode
-                    ? 'bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-50 shadow-xs'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100'
+                    ? 'bg-[var(--dip-bg-subtle)] text-[var(--dip-text-primary)] font-semibold'
+                    : 'text-[var(--dip-text-muted)] hover:text-[var(--dip-text-primary)]'
                 }`}
               >
                 {mode}
@@ -116,10 +116,10 @@ export function ApiEndpointExplorer() {
               key={tag}
               type="button"
               onClick={() => setSelectedTag(tag)}
-              className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+              className={`rounded-[var(--dip-radius-md)] border px-2.5 py-1 text-xs font-medium transition-colors duration-[var(--dip-duration-fast)] whitespace-nowrap shrink-0 cursor-pointer ${
                 selectedTag === tag
-                  ? 'border-blue-900 bg-blue-900 text-white dark:border-blue-500 dark:bg-blue-500 dark:text-neutral-950'
-                  : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                  ? 'border-transparent bg-[var(--dip-accent)] text-[var(--dip-accent-fg)] shadow-[var(--dip-shadow-sm)]'
+                  : 'border-[var(--dip-border)] bg-[var(--dip-bg-surface)] text-[var(--dip-text-secondary)] hover:border-[var(--dip-border-strong)] hover:bg-[var(--dip-bg-subtle)]'
               }`}
             >
               {tag}
@@ -129,42 +129,42 @@ export function ApiEndpointExplorer() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-8 text-center">
-          <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+        <div className="rounded-[var(--dip-radius-md)] border border-[var(--dip-border)] bg-[var(--dip-bg-surface)] p-8 text-center">
+          <p className="text-sm font-medium text-[var(--dip-text-primary)]">
             No endpoints match the selected filters
           </p>
-          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+          <p className="mt-1 text-xs text-[var(--dip-text-muted)]">
             Reset tag or authentication filters to view all verified /api/v1 operations.
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-neutral-200 dark:divide-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
+        <div className="divide-y divide-[var(--dip-border)] rounded-[var(--dip-radius-md)] border border-[var(--dip-border)] bg-[var(--dip-bg-surface)]">
           {filtered.map((op) => (
             <div key={`${op.method}-${op.path}`} className="p-4 space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <span
-                    className={`rounded border px-2 py-0.5 font-mono text-xs font-semibold ${
+                    className={`rounded-[var(--dip-radius-sm)] border px-2 py-0.5 font-mono text-xs font-semibold ${
                       METHOD_STYLES[op.method] ??
-                      'border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200'
+                      'border-[var(--dip-border)] text-[var(--dip-text-primary)]'
                     }`}
                   >
                     {op.method}
                   </span>
-                  <code className="font-mono text-xs sm:text-sm font-medium text-neutral-950 dark:text-neutral-100">
+                  <code className="font-mono text-xs sm:text-sm font-medium text-[var(--dip-text-primary)]">
                     {op.path}
                   </code>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
+                <div className="flex items-center gap-3 text-xs text-[var(--dip-text-muted)]">
                   <span className="inline-flex items-center gap-1">
                     {op.requiresAuth ? (
                       <>
-                        <Lock className="h-3 w-3 text-blue-900 dark:text-blue-400" />
+                        <Lock className="h-3 w-3 text-[var(--dip-accent-text)]" />
                         <span>Bearer JWT</span>
                       </>
                     ) : (
                       <>
-                        <Unlock className="h-3 w-3 text-emerald-700 dark:text-emerald-400" />
+                        <Unlock className="h-3 w-3 text-[var(--dip-success)]" />
                         <span>Public</span>
                       </>
                     )}
@@ -172,17 +172,17 @@ export function ApiEndpointExplorer() {
                   {op.requiresIdempotency && (
                     <>
                       <span aria-hidden="true">·</span>
-                      <span className="font-mono text-[11px] text-neutral-700 dark:text-neutral-300">
+                      <span className="font-mono text-[11px] text-[var(--dip-text-secondary)]">
                         Idempotency-Key
                       </span>
                     </>
                   )}
                 </div>
               </div>
-              <p className="text-sm text-neutral-700 dark:text-neutral-300">
+              <p className="text-sm text-[var(--dip-text-secondary)]">
                 {op.summary}
               </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--dip-text-muted)]">
                 <span>Tag: {op.tags.join(', ')}</span>
                 <span>
                   Responses: {Object.keys(op.responses).join(', ')}
