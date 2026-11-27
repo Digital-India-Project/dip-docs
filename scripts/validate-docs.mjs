@@ -239,6 +239,7 @@ const scanFiles = [
   ...walk(path.join(ROOT, 'src'), (f) => /\.(ts|tsx|css|json)$/.test(f)),
   ...walk(path.join(ROOT, 'scripts'), (f) => /\.(js|mjs|ts)$/.test(f)),
   path.join(ROOT, 'index.html'),
+  path.join(ROOT, 'integration/manifest.json'),
 ].filter((f) => fs.existsSync(f));
 
 const SECRET_PATTERNS = [
@@ -275,6 +276,39 @@ const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 for (const requiredMeta of ['<title>', 'name="description"', 'property="og:title"', 'name="twitter:card"', 'application/ld+json']) {
   if (!indexHtml.includes(requiredMeta)) {
     errors.push(`[seo] index.html missing ${requiredMeta}`);
+  }
+}
+
+// 9. Integration Manifest validation
+const manifestPath = path.join(ROOT, 'integration/manifest.json');
+if (!fs.existsSync(manifestPath)) {
+  errors.push('[manifest] Missing integration/manifest.json');
+} else {
+  try {
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    for (const key of [
+      'repositoryName',
+      'repositoryVersion',
+      'packageName',
+      'runtimeRequirements',
+      'frameworkRequirements',
+      'publicExports',
+      'apiContractsConsumed',
+      'apiContractsProvided',
+      'authenticationDependencies',
+      'databaseDependencies',
+      'infrastructureDependencies',
+      'environmentVariables',
+      'relatedRepositoryVersions',
+      'compatibilityStatus',
+      'knownBlockers',
+    ]) {
+      if (!(key in manifest)) {
+        errors.push(`[manifest] Missing required field '${key}' in integration/manifest.json`);
+      }
+    }
+  } catch (err) {
+    errors.push(`[manifest] Invalid JSON in integration/manifest.json: ${err.message}`);
   }
 }
 

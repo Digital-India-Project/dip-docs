@@ -26,100 +26,39 @@ import hiGettingStartedRaw from '../../docs/hi/getting-started.md?raw';
 import hiUserGuidesRaw from '../../docs/hi/user-guides.md?raw';
 import hiApplicationLifecycleRaw from '../../docs/hi/application-lifecycle.md?raw';
 import hiServiceCatalogueRaw from '../../docs/hi/service-catalogue.md?raw';
+import integrationContractsRaw from '../../docs/INTEGRATION_CONTRACTS.md?raw';
+import compatibilityMatrixRaw from '../../docs/COMPATIBILITY_MATRIX.md?raw';
+import implementationStatusRaw from '../../docs/IMPLEMENTATION_STATUS.md?raw';
+import testReportRaw from '../../docs/TEST_REPORT.md?raw';
+import adrIndexRaw from '../../docs/adr/README.md?raw';
+import adr0001Raw from '../../docs/adr/0001-vite-react-documentation-runtime.md?raw';
+import adr0002Raw from '../../docs/adr/0002-dip-ui-token-parity-without-runtime-coupling.md?raw';
+import adr0003Raw from '../../docs/adr/0003-dipindia-source-of-truth-and-sandbox-labeling.md?raw';
+import adr0004Raw from '../../docs/adr/0004-ci-contract-validation-and-manifest-sync.md?raw';
 import openApiSpecJson from '../../docs/api/openapi.json';
+import {
+  type AudienceClass,
+  type DocEntry,
+  type DocHeading,
+  type DocLanguage,
+  type ImplementationStatus,
+  estimateReadMinutes,
+  extractHeadings,
+  extractTitle,
+  resolveDocFromList,
+  slugifyHeading,
+} from './docUtils';
 
-export type AudienceClass = 'Public' | 'Developer' | 'Partner' | 'Internal';
-
-export type ImplementationStatus =
-  | 'Implemented and verified'
-  | 'Implemented but not fully verified'
-  | 'Interface or contract only'
-  | 'Mock or sandbox only'
-  | 'Planned'
-  | 'Blocked by dependency'
-  | 'Deprecated';
-
-export type DocLanguage = 'en' | 'hi';
-
-export interface DocHeading {
-  id: string;
-  text: string;
-  level: 2 | 3;
-}
-
-export interface DocEntry {
-  id: string;
-  slug: string;
-  filePath: string;
-  navLabel: string;
-  title: string;
-  section: string;
-  summary: string;
-  audience: string;
-  audienceClass: AudienceClass;
-  owner: string;
-  status: ImplementationStatus;
-  lastVerified: string;
-  lang: DocLanguage;
-  translationPairId?: string;
-  translationStatus: 'English' | 'Reviewed Hindi';
-  interactiveModule?: 'endpoint-explorer' | 'rbac-matrix';
-  content: string;
-  headings: DocHeading[];
-  readMinutes: number;
-}
+export type {
+  AudienceClass,
+  DocEntry,
+  DocHeading,
+  DocLanguage,
+  ImplementationStatus,
+};
+export { slugifyHeading };
 
 export const OPENAPI_SPEC = openApiSpecJson;
-
-export function slugifyHeading(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[`*_~()[\]{}]/g, '')
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-}
-
-function extractHeadings(markdown: string): DocHeading[] {
-  const lines = markdown.split(/\r?\n/);
-  const headings: DocHeading[] = [];
-  let inCodeBlock = false;
-  const seenIds = new Map<string, number>();
-
-  for (const line of lines) {
-    if (line.trim().startsWith('```')) {
-      inCodeBlock = !inCodeBlock;
-      continue;
-    }
-    if (inCodeBlock) continue;
-
-    const match = line.match(/^(#{2,3})\s+(.+)$/);
-    if (match) {
-      const level = match[1].length as 2 | 3;
-      const rawText = match[2].replace(/[`*_]/g, '').trim();
-      let id = slugifyHeading(rawText);
-      const count = seenIds.get(id) ?? 0;
-      seenIds.set(id, count + 1);
-      if (count > 0) {
-        id = `${id}-${count}`;
-      }
-      headings.push({ id, text: rawText, level });
-    }
-  }
-
-  return headings;
-}
-
-function extractTitle(markdown: string, fallback: string): string {
-  const match = markdown.match(/^#\s+(.+)$/m);
-  return match ? match[1].trim() : fallback;
-}
-
-function estimateReadMinutes(markdown: string): number {
-  const words = markdown.trim().split(/\s+/).length;
-  return Math.max(1, Math.round(words / 200));
-}
 
 function buildDoc(config: {
   id: string;
@@ -482,6 +421,133 @@ export const DOCS: DocEntry[] = [
     status: 'Implemented and verified',
     raw: integrationRaw,
   }),
+  buildDoc({
+    id: 'integration-contracts',
+    slug: 'docs/INTEGRATION_CONTRACTS.md',
+    filePath: 'docs/INTEGRATION_CONTRACTS.md',
+    navLabel: 'Integration Contracts',
+    section: 'Planning & Governance',
+    summary:
+      'Shared ecosystem architecture decisions, open coordination items, consumed/provided contracts, and compatibility risks.',
+    audience: 'Repository owners & architects',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: integrationContractsRaw,
+  }),
+  buildDoc({
+    id: 'compatibility-matrix',
+    slug: 'docs/COMPATIBILITY_MATRIX.md',
+    filePath: 'docs/COMPATIBILITY_MATRIX.md',
+    navLabel: 'Compatibility Matrix',
+    section: 'Planning & Governance',
+    summary:
+      'Verified package versions, commit SHAs, runtime compatibility, and observed contract drift across all 10 repositories.',
+    audience: 'Release managers & architects',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: compatibilityMatrixRaw,
+  }),
+  buildDoc({
+    id: 'implementation-status',
+    slug: 'docs/IMPLEMENTATION_STATUS.md',
+    filePath: 'docs/IMPLEMENTATION_STATUS.md',
+    navLabel: 'Implementation Status',
+    section: 'Planning & Governance',
+    summary:
+      'Source-code module inventory, verified readiness classification, and explicit repository limitations.',
+    audience: 'Maintainers & QA engineers',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: implementationStatusRaw,
+  }),
+  buildDoc({
+    id: 'test-report',
+    slug: 'docs/TEST_REPORT.md',
+    filePath: 'docs/TEST_REPORT.md',
+    navLabel: 'Test & QA Report',
+    section: 'Planning & Governance',
+    summary:
+      'Execution coverage separating unit tests, contract checks, security scans, type/build checks, and untested live E2E layers.',
+    audience: 'QA engineers & maintainers',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: testReportRaw,
+  }),
+  // Architecture Decision Records
+  buildDoc({
+    id: 'adr-index',
+    slug: 'docs/adr/README.md',
+    filePath: 'docs/adr/README.md',
+    navLabel: 'ADR Index',
+    section: 'Architecture Decisions',
+    summary:
+      'Index of recorded architecture decision records for dip-docs and cross-repository coordination.',
+    audience: 'Architects & maintainers',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: adrIndexRaw,
+  }),
+  buildDoc({
+    id: 'adr-0001',
+    slug: 'docs/adr/0001-vite-react-documentation-runtime.md',
+    filePath: 'docs/adr/0001-vite-react-documentation-runtime.md',
+    navLabel: 'ADR-0001 Runtime',
+    section: 'Architecture Decisions',
+    summary:
+      'Decision to preserve the Vite + React 19 documentation runtime while extracting Node-testable utilities.',
+    audience: 'Architects & maintainers',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: adr0001Raw,
+  }),
+  buildDoc({
+    id: 'adr-0002',
+    slug: 'docs/adr/0002-dip-ui-token-parity-without-runtime-coupling.md',
+    filePath: 'docs/adr/0002-dip-ui-token-parity-without-runtime-coupling.md',
+    navLabel: 'ADR-0002 dip-ui Tokens',
+    section: 'Architecture Decisions',
+    summary:
+      'Decision to mirror dip-ui semantic light/dark CSS tokens locally until registry packages publish.',
+    audience: 'Frontend & UI engineers',
+    audienceClass: 'Developer',
+    owner: 'dip-docs & dip-ui',
+    status: 'Implemented and verified',
+    raw: adr0002Raw,
+  }),
+  buildDoc({
+    id: 'adr-0003',
+    slug: 'docs/adr/0003-dipindia-source-of-truth-and-sandbox-labeling.md',
+    filePath: 'docs/adr/0003-dipindia-source-of-truth-and-sandbox-labeling.md',
+    navLabel: 'ADR-0003 Truth Policy',
+    section: 'Architecture Decisions',
+    summary:
+      'Decision enforcing DIPINDIA source-of-truth provenance and explicit sandbox/planned labeling.',
+    audience: 'Technical writers & architects',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: adr0003Raw,
+  }),
+  buildDoc({
+    id: 'adr-0004',
+    slug: 'docs/adr/0004-ci-contract-validation-and-manifest-sync.md',
+    filePath: 'docs/adr/0004-ci-contract-validation-and-manifest-sync.md',
+    navLabel: 'ADR-0004 CI Contracts',
+    section: 'Architecture Decisions',
+    summary:
+      'Decision automating Markdown link, OpenAPI, manifest, secret, and node:test verification in CI.',
+    audience: 'DevOps & maintainers',
+    audienceClass: 'Developer',
+    owner: 'dip-docs',
+    status: 'Implemented and verified',
+    raw: adr0004Raw,
+  }),
   // Hindi Bilingual Docs
   buildDoc({
     id: 'hi-overview',
@@ -587,40 +653,6 @@ export const DOCS: DocEntry[] = [
   }),
 ];
 
-function normalizePosixPath(parts: string[]): string {
-  const stack: string[] = [];
-  for (const part of parts) {
-    if (!part || part === '.') continue;
-    if (part === '..') {
-      stack.pop();
-    } else {
-      stack.push(part);
-    }
-  }
-  return stack.join('/');
-}
-
 export function resolveDocByHref(href: string, currentFilePath?: string): DocEntry | undefined {
-  const cleanHref = href.split('#')[0].trim();
-  if (!cleanHref) return undefined;
-
-  const candidates = new Set<string>([cleanHref.replace(/^\.?\//, '')]);
-
-  if (currentFilePath) {
-    const dirParts = currentFilePath.split('/').slice(0, -1);
-    const resolved = normalizePosixPath([...dirParts, ...cleanHref.split('/')]);
-    if (resolved) candidates.add(resolved);
-  }
-
-  for (const candidate of candidates) {
-    const match = DOCS.find(
-      (doc) =>
-        doc.slug.toLowerCase() === candidate.toLowerCase() ||
-        doc.filePath.toLowerCase() === candidate.toLowerCase() ||
-        doc.id.toLowerCase() === candidate.toLowerCase()
-    );
-    if (match) return match;
-  }
-
-  return undefined;
+  return resolveDocFromList(DOCS, href, currentFilePath);
 }

@@ -8,7 +8,12 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
     "lint": "tsc --noEmit",
-    "docs:validate": "node scripts/validate-docs.mjs"
+    "docs:validate": "node scripts/validate-docs.mjs",
+    "test": "node --experimental-strip-types --test \"tests/**/*.test.ts\"",
+    "test:unit": "node --experimental-strip-types --test \"tests/unit/*.test.ts\"",
+    "test:contract": "node --experimental-strip-types --test \"tests/contract/*.test.ts\"",
+    "test:security": "node --experimental-strip-types --test \"tests/security/*.test.ts\"",
+    "ci:check": "npm run lint && npm run docs:validate && npm test && npm run build"
   },
   "dependencies": {
     "lucide-react": "^0.511.0",

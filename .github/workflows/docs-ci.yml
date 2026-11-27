@@ -31,8 +31,11 @@ jobs:
       - name: TypeScript typecheck
         run: npm run lint
 
-      - name: Validate Markdown, links, OpenAPI, Mermaid & secrets
+      - name: Validate Markdown, links, OpenAPI, Mermaid, manifest & secrets
         run: npm run docs:validate
+
+      - name: Run unit, contract, and security test suites
+        run: npm test
 
       - name: Build documentation site (preview verification only)
         run: npm run build

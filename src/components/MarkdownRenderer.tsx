@@ -9,6 +9,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { DocEntry, resolveDocByHref, slugifyHeading } from '../data/docs';
+import { isSafeHref } from '../data/docUtils';
 import { MermaidBlock } from './MermaidBlock';
 
 interface MarkdownRendererProps {
@@ -275,6 +276,10 @@ export function MarkdownRenderer({
                   {children}
                 </a>
               );
+            }
+
+            if (!isSafeHref(href)) {
+              return <span className="text-[var(--dip-text-muted)]">{children}</span>;
             }
 
             return (

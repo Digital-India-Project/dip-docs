@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 import { Check, Code2, Copy, Eye } from 'lucide-react';
 
@@ -7,8 +7,35 @@ interface MermaidBlockProps {
   isDark: boolean;
 }
 
+function mountSanitizedSvg(container: HTMLElement, rawSvg: string) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(rawSvg, 'image/svg+xml');
+  const root = doc.documentElement;
+  if (!root || root.tagName.toLowerCase() !== 'svg') {
+    container.replaceChildren();
+    return;
+  }
+
+  for (const dangerous of root.querySelectorAll('script')) {
+    dangerous.remove();
+  }
+  for (const el of root.querySelectorAll('*')) {
+    for (const attr of Array.from(el.attributes)) {
+      if (
+        attr.name.toLowerCase().startsWith('on') ||
+        attr.value.trim().toLowerCase().startsWith('javascript:')
+      ) {
+        el.removeAttribute(attr.name);
+      }
+    }
+  }
+
+  container.replaceChildren(document.importNode(root, true));
+}
+
 export function MermaidBlock({ chart, isDark }: MermaidBlockProps) {
   const uniqueId = useId().replace(/:/g, '_');
+  const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [showSource, setShowSource] = useState(false);
@@ -41,6 +68,12 @@ export function MermaidBlock({ chart, isDark }: MermaidBlockProps) {
       cancelled = true;
     };
   }, [chart, isDark, uniqueId]);
+
+  useEffect(() => {
+    if (!showSource && !error && svg && containerRef.current) {
+      mountSanitizedSvg(containerRef.current, svg);
+    }
+  }, [svg, showSource, error]);
 
   const handleCopy = () => {
     if (navigator.clipboard) {
@@ -109,9 +142,9 @@ export function MermaidBlock({ chart, isDark }: MermaidBlockProps) {
         </div>
       ) : (
         <div
+          ref={containerRef}
           className="overflow-x-auto bg-[var(--dip-bg-surface)] p-4 sm:p-6 flex justify-center [&_svg]:max-w-full [&_svg]:h-auto"
           aria-label="Rendered architecture or workflow diagram"
-          dangerouslySetInnerHTML={{ __html: svg }}
         />
       )}
     </figure>

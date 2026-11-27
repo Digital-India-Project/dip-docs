@@ -1,18 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, FileText, Search, X } from 'lucide-react';
-import { AudienceClass, DOCS, DocEntry } from '../data/docs';
+import { AudienceClass, DOCS } from '../data/docs';
+import { searchDocs, type SearchMatch } from '../data/docUtils';
 
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectDoc: (docId: string) => void;
-}
-
-interface SearchMatch {
-  doc: DocEntry;
-  snippet: string;
-  matchedHeading?: string;
-  score: number;
 }
 
 const AUDIENCE_FILTERS: Array<'All' | AudienceClass> = [
@@ -22,22 +16,6 @@ const AUDIENCE_FILTERS: Array<'All' | AudienceClass> = [
   'Partner',
   'Internal',
 ];
-
-function getExcerpt(content: string, query: string): string {
-  const lower = content.toLowerCase();
-  const idx = lower.indexOf(query.toLowerCase());
-  if (idx === -1) {
-    return content
-      .replace(/^#.*$/gm, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, 140);
-  }
-  const start = Math.max(0, idx - 55);
-  const end = Math.min(content.length, idx + query.length + 95);
-  const raw = content.slice(start, end).replace(/\s+/g, ' ').trim();
-  return `${start > 0 ? '…' : ''}${raw}${end < content.length ? '…' : ''}`;
-}
 
 export function SearchModal({ isOpen, onClose, onSelectDoc }: SearchModalProps) {
   const [query, setQuery] = useState('');
@@ -55,44 +33,7 @@ export function SearchModal({ isOpen, onClose, onSelectDoc }: SearchModalProps) 
   }, [isOpen]);
 
   const results = useMemo<SearchMatch[]>(() => {
-    const trimmed = query.trim().toLowerCase();
-    const scopedDocs =
-      audienceFilter === 'All'
-        ? DOCS
-        : DOCS.filter((d) => d.audienceClass === audienceFilter);
-
-    if (!trimmed) {
-      return scopedDocs.map((doc) => ({
-        doc,
-        snippet: doc.summary,
-        score: 0,
-      }));
-    }
-
-    const matches: SearchMatch[] = [];
-    for (const doc of scopedDocs) {
-      let score = 0;
-      if (doc.title.toLowerCase().includes(trimmed)) score += 100;
-      if (doc.navLabel.toLowerCase().includes(trimmed)) score += 80;
-      const headingMatch = doc.headings.find((h) =>
-        h.text.toLowerCase().includes(trimmed)
-      );
-      if (headingMatch) score += 50;
-      if (doc.summary.toLowerCase().includes(trimmed)) score += 35;
-      if (doc.content.toLowerCase().includes(trimmed)) score += 15;
-
-      if (score > 0) {
-        matches.push({
-          doc,
-          matchedHeading: headingMatch?.text,
-          snippet: getExcerpt(doc.content, trimmed),
-          score,
-        });
-      }
-    }
-
-    matches.sort((a, b) => b.score - a.score);
-    return matches;
+    return searchDocs(DOCS, query, audienceFilter);
   }, [query, audienceFilter]);
 
   useEffect(() => {

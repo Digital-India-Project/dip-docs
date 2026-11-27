@@ -1,0 +1,296 @@
+{
+  "schemaVersion": "1.0.0",
+  "repositoryName": "Digital-India-Project/dip-docs",
+  "repositoryVersion": "0.1.0",
+  "packageName": "dip-docs",
+  "private": true,
+  "roleInEcosystem": "Centralized bilingual (English and Hindi) technical, product, API, SDK, workflow, operations, and governance documentation ecosystem for Digital India Project.",
+  "runtimeRequirements": {
+    "node": ">=20.0.0",
+    "recommendedCiNode": "22",
+    "packageManager": "npm (legacy bun.lock preserved without modification)",
+    "browser": "Modern evergreen browsers supporting ES2022, Fetch API, and CSS Custom Properties"
+  },
+  "frameworkRequirements": {
+    "bundler": "vite ^6.2.0",
+    "uiLibrary": "react ^19.1.0",
+    "language": "typescript ^5.8.2",
+    "styling": "tailwindcss ^4.1.4 (@tailwindcss/vite) with dip-ui semantic CSS custom properties",
+    "markdownEngine": "react-markdown ^10.1.0 with remark-gfm ^4.0.1",
+    "diagrams": "mermaid ^12.4.0",
+    "icons": "lucide-react ^0.511.0"
+  },
+  "packageEntrypoints": {
+    "webApplication": "src/main.tsx",
+    "docsRegistry": "src/data/docs.ts",
+    "docUtilities": "src/data/docUtils.ts",
+    "designTokens": "src/styles/dip-tokens.css",
+    "openApiSnapshot": "docs/api/openapi.json",
+    "validationCli": "scripts/validate-docs.mjs"
+  },
+  "publicExports": {
+    "src/data/docs.ts": [
+      "DOCS",
+      "OPENAPI_SPEC",
+      "resolveDocByHref",
+      "slugifyHeading",
+      "type AudienceClass",
+      "type ImplementationStatus",
+      "type DocLanguage",
+      "type DocHeading",
+      "type DocEntry"
+    ],
+    "src/data/docUtils.ts": [
+      "AUDIENCE_CLASSES",
+      "IMPLEMENTATION_STATUSES",
+      "slugifyHeading",
+      "extractHeadings",
+      "extractTitle",
+      "estimateReadMinutes",
+      "normalizePosixPath",
+      "resolveDocFromList",
+      "isSafeHref",
+      "getExcerpt",
+      "searchDocs",
+      "type SearchMatch"
+    ],
+    "staticArtifacts": [
+      "integration/manifest.json",
+      "docs/api/openapi.json",
+      "public/sitemap.xml",
+      "public/robots.txt"
+    ]
+  },
+  "apiContractsConsumed": [
+    {
+      "providerRepo": "Digital-India-Project/dip-api",
+      "contractType": "OpenAPI 3.1.0",
+      "contractPath": "src/server/routes/v1/openapi.ts",
+      "localSnapshot": "docs/api/openapi.json",
+      "basePath": "/api/v1",
+      "endpointCount": 22,
+      "operationCount": 25,
+      "status": "Mock or sandbox only",
+      "notes": "Static OpenAPI 3.1.0 specification mirrored for documentation and interactive explorer rendering; dip-docs executes zero runtime HTTP calls against dip-api."
+    },
+    {
+      "providerRepo": "Digital-India-Project/DIPINDIA",
+      "contractType": "Domain, RBAC & Workflow Authority",
+      "contractPaths": [
+        "src/lib/rbac.ts",
+        "src/lib/serviceCatalogue.ts",
+        "worker/routes/*"
+      ],
+      "status": "Implemented and verified",
+      "notes": "Read-only documentation source of truth for 7 user roles, 22 PermissionCode grants, 24 ApplicationStatus values, 14 canonical statuses, 8 catalogue categories (CAT_A-CAT_H), and active Cloudflare Worker routes."
+    },
+    {
+      "providerRepo": "Digital-India-Project/dip-sdk",
+      "contractType": "TypeScript SDK Surface",
+      "packageName": "@digital-india/sdk",
+      "contractVersion": "0.2.0",
+      "status": "Implemented and verified",
+      "notes": "Documents DIPClient modules, retry rules, Idempotency-Key constraints, header redaction, and @digital-india/sdk/webhooks Cashfree HMAC verification."
+    },
+    {
+      "providerRepo": "Digital-India-Project/dip-ui",
+      "contractType": "Design Tokens & Typography",
+      "packageName": "@digital-india-project/dip-ui",
+      "contractVersion": "0.4.0",
+      "contractPath": "src/lib/tokens/tokens.css",
+      "localMirror": "src/styles/dip-tokens.css",
+      "status": "Implemented and verified",
+      "notes": "CSS custom properties mirrored cleanly into dip-docs because @digital-india-project/dip-ui is not yet published to a public npm registry."
+    },
+    {
+      "providerRepo": "Digital-India-Project/dip-core",
+      "contractType": "Domain Contracts & Monetary Rules",
+      "packageName": "@dip/core",
+      "contractVersion": "0.2.0",
+      "status": "Interface or contract only",
+      "notes": "Documents pure domain boundaries and integer-paise monetary conventions; flags package name mismatch with dip-sdk compatibility doc referencing @digital-india/core."
+    },
+    {
+      "providerRepo": "Digital-India-Project/dip-security",
+      "contractType": "Security Contracts & Policy",
+      "packageName": "dip-security",
+      "contractVersion": "0.1.0",
+      "status": "Interface or contract only",
+      "notes": "Documents Principal, DipRole, DipPermission, DefaultDenyAuthorizer, verifyCashfreeWebhook, and redaction policy."
+    },
+    {
+      "providerRepo": "Digital-India-Project/dip-automation",
+      "contractType": "Background Task & Workflow Contracts",
+      "packageName": "dip-automation",
+      "contractVersion": "0.1.0",
+      "status": "Mock or sandbox only",
+      "notes": "Documents TaskEngine, WorkflowEngine, jobs.yaml cron definitions, and DLQ handling."
+    },
+    {
+      "providerRepo": "Digital-India-Project/dip-infrastructure",
+      "contractType": "Cloudflare & PostgreSQL Infrastructure Templates",
+      "packageName": "dip-infrastructure",
+      "contractVersion": "1.0.0",
+      "status": "Interface or contract only",
+      "notes": "Documents Cloudflare D1/R2 free-plan limits, Postgres/Redis templates, and CI quality gates."
+    },
+    {
+      "providerRepo": "Digital-India-Project/dip-status",
+      "contractType": "Health & Incident Status Documentation",
+      "packageName": null,
+      "contractVersion": "0.0.0",
+      "status": "Planned",
+      "notes": "Planning-only repository with 6 Markdown files and no package.json or runtime endpoints yet."
+    }
+  ],
+  "apiContractsProvided": {
+    "httpEndpoints": [],
+    "machineReadableArtifacts": [
+      {
+        "path": "integration/manifest.json",
+        "format": "JSON",
+        "purpose": "Ecosystem synchronization and compatibility manifest for dip-docs"
+      },
+      {
+        "path": "docs/api/openapi.json",
+        "format": "OpenAPI 3.1.0 JSON",
+        "purpose": "Curated static mirror of dip-api v1 specification for offline validation and explorer UI"
+      },
+      {
+        "path": "public/sitemap.xml",
+        "format": "XML Sitemap",
+        "purpose": "SEO index of public and developer documentation routes"
+      }
+    ],
+    "notes": "dip-docs is a static frontend documentation portal and exposes no server HTTP endpoints."
+  },
+  "authenticationDependencies": {
+    "runtimeAuthRequired": false,
+    "documentedAuthSystems": [
+      "DIPINDIA Firebase Authentication + server-side session/RBAC (requirePermission)",
+      "dip-api HS256 Bearer JWT with scope claims and tenant_id boundaries",
+      "Cashfree HMAC-SHA256 webhook signature verification"
+    ],
+    "accessControlLimitation": "Static Vite bundle includes all registered Markdown documents including Internal-classified docs. Production deployment must enforce Cloudflare Access / edge auth gating before exposing Internal or Restricted runbooks."
+  },
+  "databaseDependencies": {
+    "ownsDatabase": false,
+    "runtimeDatabase": "none",
+    "documentedStorageOwners": [
+      "DIPINDIA (10 Cloudflare D1 databases and 10 Cloudflare R2 buckets)",
+      "dip-infrastructure (PostgreSQL, Redis, and R2 IaC templates)"
+    ]
+  },
+  "infrastructureDependencies": {
+    "hostingTarget": "Static site hosting (Cloudflare Pages / Cloudflare Workers ASSETS / static CDN)",
+    "ciRunner": "GitHub Actions ubuntu-latest with Node.js 22",
+    "externalNetworkAtRuntime": "Google Fonts stylesheet links in index.html (graceful system font fallback when offline)"
+  },
+  "environmentVariables": {
+    "requiredRuntime": [],
+    "optionalCi": [
+      "NODE_ENV"
+    ],
+    "secretsRequired": false
+  },
+  "relatedRepositoryVersions": {
+    "DIPINDIA": {
+      "branch": "main",
+      "commit": "04542ec",
+      "packageName": "dipindia-react-vite",
+      "version": "verified-functional-authority"
+    },
+    "dip-api": {
+      "branch": "main",
+      "commit": "c3348d5",
+      "packageName": "dip-api-portal",
+      "version": "0.1.0"
+    },
+    "dip-sdk": {
+      "branch": "master",
+      "commit": "926cee4",
+      "packageName": "@digital-india/sdk",
+      "version": "0.2.0"
+    },
+    "dip-core": {
+      "branch": "main",
+      "commit": "f3bdc28",
+      "packageName": "@dip/core",
+      "version": "0.2.0"
+    },
+    "dip-ui": {
+      "branch": "main",
+      "commit": "1b99701",
+      "packageName": "@digital-india-project/dip-ui",
+      "version": "0.4.0"
+    },
+    "dip-security": {
+      "branch": "main",
+      "commit": "c9f39f5",
+      "packageName": "dip-security",
+      "version": "0.1.0"
+    },
+    "dip-infrastructure": {
+      "branch": "master",
+      "commit": "d602b2c",
+      "packageName": "dip-infrastructure",
+      "version": "1.0.0"
+    },
+    "dip-automation": {
+      "branch": "master",
+      "commit": "b9ce7f3",
+      "packageName": "dip-automation",
+      "version": "0.1.0"
+    },
+    "dip-status": {
+      "branch": "main",
+      "commit": "8fa3578",
+      "packageName": null,
+      "version": "0.0.0"
+    },
+    "dip-docs": {
+      "branch": "development/documentation-foundation",
+      "upstreamMainCommit": "1d9808a",
+      "localBaseMainCommit": "b2c6d8f",
+      "packageName": "dip-docs",
+      "version": "0.1.0"
+    }
+  },
+  "compatibilityStatus": {
+    "overall": "compatible-with-explicit-adapters-and-documented-gaps",
+    "implementedAndVerified": [
+      "Bilingual documentation portal (English and reviewed Hindi subset) built on Vite + React 19 + TypeScript",
+      "dip-ui light/dark semantic CSS token parity and typography integration",
+      "Interactive OpenAPI 3.1.0 Endpoint Explorer synced to dip-api v1 routes",
+      "Interactive DIPINDIA 7-role / 22-permission RBAC matrix",
+      "Full-text audience-aware search modal and heading anchor navigation",
+      "Automated validation CLI (links, anchors, headings, Mermaid, OpenAPI, SEO, secrets, manifest)",
+      "Automated unit, contract, and security tests via node:test"
+    ],
+    "interfaceOrContractOnly": [
+      "dip-core domain contract documentation (@dip/core)",
+      "dip-security authorization and webhook signature documentation",
+      "dip-infrastructure Cloudflare/PostgreSQL runbooks",
+      "External verification integrations (API Setu, DigiLocker, Entity Locker)"
+    ],
+    "mockOrSandboxOnly": [
+      "dip-api v1 gateway reference (backed by sandbox IDipindiaAdapter and ICashfreeAdapter)",
+      "dip-automation TaskEngine and WorkflowEngine execution flows"
+    ],
+    "blockedByDependency": [
+      "Live dip-api <-> DIPINDIA D1/Worker bridge endpoints (/api/v1/auth/me, /api/v1/forms/validate, document binary download)",
+      "dip-status runtime health schema and public status feed (dip-status currently has no package.json or code)",
+      "Direct npm consumption of @digital-india-project/dip-ui and @dip/core (neither package is published to npm registry)"
+    ],
+    "untested": [
+      "Browser E2E headless rendering tests (Playwright/Cypress not installed in repository)",
+      "Live HTTP contract testing against deployed dip-api or DIPINDIA environments"
+    ]
+  },
+  "knownBlockers": [
+    "dip-core package.json exports '@dip/core', whereas dip-sdk compatibility docs reference '@digital-india/core' — naming must be aligned before npm publication.",
+    "dip-status contains planning Markdown only (no code, package.json, or status JSON schema), blocking machine-verified status telemetry documentation.",
+    "Static Vite build bundles Internal-classified documentation pages into client assets; hosting-level authentication (e.g., Cloudflare Access) or a split build is required before hosting Internal docs publicly.",
+    "Upstream GitHub remote for Digital-India-Project/dip-docs has main at 1d9808a and review/planning-dip-docs at a954e0b; this workspace has no git remote configured, so PR submission requires manual push from an authorized workstation."
+  ]
+}

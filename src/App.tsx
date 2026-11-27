@@ -39,6 +39,7 @@ const SECTIONS_ORDER = [
   'API & SDK',
   'Security & Operations',
   'Planning & Governance',
+  'Architecture Decisions',
   'हिंदी दस्तावेज़ीकरण',
 ];
 
