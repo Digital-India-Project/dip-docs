@@ -6,21 +6,49 @@
     <title>DIP Docs — Digital India Project Documentation</title>
     <meta
       name="description"
-      content="Canonical technical, developer, operational, and migration documentation for the Digital India Project ecosystem."
+      content="Explore canonical technical, developer, user, API, SDK, workflow, and operational documentation for the Digital India Project ecosystem."
     />
+    <link rel="canonical" href="https://docs.digitalindiaproject.example/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DIP Docs" />
     <meta property="og:title" content="DIP Docs — Digital India Project Documentation" />
     <meta
       property="og:description"
-      content="Canonical technical, developer, operational, and migration documentation for the Digital India Project ecosystem."
+      content="Explore canonical technical, developer, user, API, SDK, workflow, and operational documentation for the Digital India Project ecosystem."
     />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="DIP Docs — Digital India Project Documentation" />
+    <meta
+      name="twitter:description"
+      content="Canonical technical, developer, user, API, SDK, workflow, and operational documentation for Digital India Project."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "DIP Docs",
+        "description": "Canonical technical, developer, user, and operational documentation for Digital India Project, a private digital services and technology platform.",
+        "inLanguage": ["en", "hi"]
+      }
+    </script>
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('dip-docs-theme');
+          if (saved === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
-  <body class="bg-white text-neutral-900 antialiased selection:bg-blue-900 selection:text-white">
+  <body class="bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 antialiased selection:bg-blue-900 selection:text-white dark:selection:bg-blue-500 dark:selection:text-neutral-950">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

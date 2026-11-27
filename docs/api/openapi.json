@@ -1,0 +1,302 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "DIP API — Digital India Project Gateway",
+    "version": "1.0.0-foundation",
+    "description": "Versioned API boundary (/api/v1) for Digital India Project services. Private service platform; not a government portal. Currently operating in isolated sandbox adapter mode until DIPINDIA and live integrations are approved."
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "Local Sandbox Adapter Gateway (synthetic data)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Short-lived, issuer/audience-verified bearer token with explicit scopes and tenant claims."
+      }
+    },
+    "schemas": {
+      "ErrorEnvelope": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message", "correlation_id", "details"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR",
+                  "UNAUTHENTICATED",
+                  "FORBIDDEN",
+                  "NOT_FOUND",
+                  "RATE_LIMITED",
+                  "IDEMPOTENCY_CONFLICT",
+                  "PROVIDER_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ]
+              },
+              "message": { "type": "string" },
+              "correlation_id": { "type": "string" },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": { "type": "string" },
+                    "reason": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Money": {
+        "type": "object",
+        "required": ["amount_minor", "currency"],
+        "properties": {
+          "amount_minor": { "type": "integer", "minimum": 0, "example": 149900 },
+          "currency": { "type": "string", "enum": ["INR", "USD", "EUR"], "example": "INR" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Gateway health status",
+        "tags": ["Observability"],
+        "responses": { "200": { "description": "Gateway is healthy" } }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Non-sensitive route-level metrics snapshot",
+        "tags": ["Observability"],
+        "responses": { "200": { "description": "Aggregated request and error counts" } }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "OpenAPI 3.1.0 specification generated from implemented routes",
+        "tags": ["Documentation"],
+        "responses": { "200": { "description": "OpenAPI JSON document" } }
+      }
+    },
+    "/services": {
+      "get": {
+        "summary": "List service catalogue items (paginated, filterable)",
+        "tags": ["Catalogue"],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 20 } },
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Paginated service catalogue" } }
+      }
+    },
+    "/services/{serviceId}": {
+      "get": {
+        "summary": "Get service catalogue item by ID",
+        "tags": ["Catalogue"],
+        "parameters": [{ "name": "serviceId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Service details" },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "List product catalogue items",
+        "tags": ["Catalogue"],
+        "responses": { "200": { "description": "Paginated product catalogue" } }
+      }
+    },
+    "/products/{productId}": {
+      "get": {
+        "summary": "Get product catalogue item by ID",
+        "tags": ["Catalogue"],
+        "parameters": [{ "name": "productId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Product details" },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/applications": {
+      "get": {
+        "summary": "List tenant-scoped applications",
+        "tags": ["Applications"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Paginated applications" } }
+      },
+      "post": {
+        "summary": "Create draft or submitted application (Idempotency-Key required)",
+        "tags": ["Applications"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "201": { "description": "Application created" } }
+      }
+    },
+    "/applications/{applicationId}": {
+      "get": {
+        "summary": "Get application by ID (enforces tenant & ownership)",
+        "tags": ["Applications"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "applicationId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Application record" } }
+      },
+      "patch": {
+        "summary": "Update draft/action-required application",
+        "tags": ["Applications"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "applicationId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Updated application" } }
+      }
+    },
+    "/applications/{applicationId}/submit": {
+      "post": {
+        "summary": "Submit draft application (Idempotency-Key required)",
+        "tags": ["Applications"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "applicationId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Submitted application" } }
+      }
+    },
+    "/applications/{applicationId}/transition": {
+      "post": {
+        "summary": "Transition application workflow stage (requires workflow:review scope)",
+        "tags": ["Workflow"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "applicationId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Workflow transitioned" } }
+      }
+    },
+    "/applications/{applicationId}/documents": {
+      "get": {
+        "summary": "List document metadata for an application",
+        "tags": ["Documents"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "applicationId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Document list" } }
+      }
+    },
+    "/applications/{applicationId}/documents/upload-intent": {
+      "post": {
+        "summary": "Create validated document upload intent (Idempotency-Key required)",
+        "tags": ["Documents"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "applicationId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "201": { "description": "Upload intent created" } }
+      }
+    },
+    "/payments/orders": {
+      "post": {
+        "summary": "Create payment order in minor currency units (Idempotency-Key required)",
+        "tags": ["Payments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "201": { "description": "Payment order created" } }
+      }
+    },
+    "/payments/orders/{orderId}": {
+      "get": {
+        "summary": "Get payment order status",
+        "tags": ["Payments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "orderId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Payment order details" } }
+      }
+    },
+    "/payments/orders/{orderId}/refunds": {
+      "post": {
+        "summary": "Request payment refund (requires payments:refund scope)",
+        "tags": ["Payments"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "orderId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Refund requested" } }
+      }
+    },
+    "/payments/webhooks/cashfree": {
+      "post": {
+        "summary": "Receive Cashfree webhook event (HMAC signature + replay + deduplication verified)",
+        "tags": ["Payments"],
+        "responses": { "200": { "description": "Webhook processed or deduplicated" } }
+      }
+    },
+    "/webhooks/subscriptions": {
+      "get": {
+        "summary": "List tenant webhook subscriptions",
+        "tags": ["Webhooks"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Webhook subscriptions" } }
+      },
+      "post": {
+        "summary": "Register HTTPS webhook subscription (SSRF-validated)",
+        "tags": ["Webhooks"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "Idempotency-Key", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "201": { "description": "Subscription registered" } }
+      }
+    },
+    "/webhooks/deliveries": {
+      "get": {
+        "summary": "List tenant webhook delivery history",
+        "tags": ["Webhooks"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Delivery records" } }
+      }
+    },
+    "/integrations/providers": {
+      "get": {
+        "summary": "List registered external provider adapter contracts & readiness",
+        "tags": ["Integrations"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Provider metadata list" } }
+      }
+    },
+    "/integrations/providers/{providerId}/sandbox-check": {
+      "post": {
+        "summary": "Execute synthetic provider sandbox check (non-production sandbox only)",
+        "tags": ["Integrations"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "providerId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Sandbox check executed" } }
+      }
+    },
+    "/sandbox/token": {
+      "post": {
+        "summary": "Mint synthetic sandbox JWT (disabled in production)",
+        "tags": ["Sandbox"],
+        "responses": { "200": { "description": "Synthetic bearer token" } }
+      }
+    }
+  }
+}
